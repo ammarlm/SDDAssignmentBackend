@@ -1,0 +1,6 @@
+@SDDAssignmentBackend_HostAddress = http://localhost:5271
+
+GET {{SDDAssignmentBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
