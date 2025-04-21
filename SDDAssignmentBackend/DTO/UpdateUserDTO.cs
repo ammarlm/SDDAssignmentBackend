@@ -1,4 +1,6 @@
-﻿using SDDAssignmentBackend.Enums;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using SDDAssignmentBackend.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace SDDAssignmentBackend.DTO
@@ -8,6 +10,7 @@ namespace SDDAssignmentBackend.DTO
         public required Guid Id { get; set; }
         [MaxLength(100)]
         public required string Username { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
         public RoleEnum Role { get; set; }
     }
 

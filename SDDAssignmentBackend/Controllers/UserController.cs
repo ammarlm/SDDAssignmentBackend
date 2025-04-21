@@ -22,9 +22,9 @@ namespace SDDAssignmentBackend.Controllers
             _userService = userService;
         }
         [HttpGet()]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers([FromQuery] int page, [FromQuery] int pageSize, [FromQuery] string orderBy, [FromQuery] string orderType, [FromQuery] string? search)
         {
-            return Ok(Sucess(await _userService.GetUsers()));
+            return Ok(Sucess(await _userService.GetUsers(page, pageSize, orderBy, orderType, search)));
         }
 
         [HttpGet("{id}")]
@@ -42,9 +42,9 @@ namespace SDDAssignmentBackend.Controllers
         }
 
 
-        [HttpPut]
+        [HttpPut("{id}")]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> PutUpdateUser([FromRoute] Guid id, UpdateUserDTO userDTO)
+        public async Task<IActionResult> PutUpdateUser([FromRoute] Guid id, [FromBody] UpdateUserDTO userDTO)
         {
             return Ok(Sucess(await _userService.UpdateUser(id, userDTO)));
         }

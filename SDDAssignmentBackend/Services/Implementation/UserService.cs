@@ -18,6 +18,12 @@ namespace SDDAssignmentBackend.Services.Implementation
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
+
+        public async Task<PaginationResponse<UserEntity>> GetUsers(int page, int pageSize, string orderBy, string orderType, string search)
+        {
+            return await _userRepository.GetUsersAsync(page, pageSize, orderBy, orderType, search);
+        }
+
         public async Task<UserEntity> GetUser(Guid id)
         {
             var user = await _userRepository.GetByIdAsync(id);
@@ -95,9 +101,10 @@ namespace SDDAssignmentBackend.Services.Implementation
             }
             _logger.LogInformation("Updating user: {user}", user.Username);
 
-            //update user
+            //update user1
+            if (user.Username != updateUserDTO.Username)
+                user.Username = updateUserDTO.Username;
 
-            user.Username = updateUserDTO.Username;
             user.Role = updateUserDTO.Role.GetDescription();
 
             _userRepository.Update(user);
@@ -138,9 +145,5 @@ namespace SDDAssignmentBackend.Services.Implementation
             }
         }
 
-        public async Task<List<UserEntity>> GetUsers()
-        {
-            return await _userRepository.GetAllAsync();
-        }
     }
 }

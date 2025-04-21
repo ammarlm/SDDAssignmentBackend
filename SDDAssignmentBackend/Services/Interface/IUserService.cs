@@ -11,6 +11,6 @@ namespace SDDAssignmentBackend.Services.Interface
         Task<UserEntity> UpdateUser(Guid id, UpdateUserDTO updateUserDTO);
         Task<UserEntity> ChangeUserPassword(Guid id, ChangePasswordDTO changePasswordDTO);
         Task DeleteUser(Guid id);
-        Task<List<UserEntity>> GetUsers();
+        Task<PaginationResponse<UserEntity>> GetUsers(int page, int pageSize, string orderBy, string orderType, string search);
     }
 }

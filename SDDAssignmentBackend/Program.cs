@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using SDDAssignmentBackend.Configurations;
 using SDDAssignmentBackend.Helpers;
 using Serilog;
@@ -11,7 +12,10 @@ var logger = Serilog.Log.Logger = new LoggerConfiguration()
       .CreateLogger();
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+}); 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCors(options =>

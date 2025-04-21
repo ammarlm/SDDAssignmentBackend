@@ -5,7 +5,7 @@ namespace SDDAssignmentBackend.Enums
     public enum RoleEnum
     {
         [Description("Administrator")]
-        Admin = 1,
+        Administrator = 1,
         [Description("User")]
         User = 2
     }
