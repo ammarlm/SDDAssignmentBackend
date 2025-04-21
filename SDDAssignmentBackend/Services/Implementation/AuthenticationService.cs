@@ -15,14 +15,17 @@ namespace SDDAssignmentBackend.Services.Implementation
     {
         private readonly IUserService _userService;
         private readonly IOptions<JwtOption> _jwtOption;
-        public AuthenticationService(IUserService userService, IOptions<JwtOption> jwtOption)
+        private readonly ILogger<AuthenticationService> _logger;
+        public AuthenticationService(IUserService userService, IOptions<JwtOption> jwtOption, ILogger<AuthenticationService> logger)
         {
             _userService = userService;
             _jwtOption = jwtOption;
+            _logger = logger;
         }
         public async Task<LoginDTO> Login(LoginRequestDTO loginRequestDTO)
         {
             var user = await _userService.GetUser(loginRequestDTO.UserName, loginRequestDTO.Password);
+            _logger.LogInformation("User found: {user}", user.Username);
             return GenerateJwtToken(user);
         }
 
@@ -49,11 +52,12 @@ namespace SDDAssignmentBackend.Services.Implementation
             };
 
             SecurityToken token = handler.CreateToken(descriptor);
+            _logger.LogInformation("Token created");
             //handler.WriteToken(token);
             return new LoginDTO()
             {
                 Token = handler.WriteToken(token),
-                UserName = user.Username,
+                Username = user.Username,
                 ExpiredInMinute = _jwtOption.Value.Expired,
                 Role = user.Role
             };

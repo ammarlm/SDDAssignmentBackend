@@ -4,6 +4,6 @@ namespace SDDAssignmentBackend.Repositories.Interface
 {
     public interface IUserRepository: IBaseRepository<UserEntity>
     {
-        Task<UserEntity?> GetByUsernameAsync(string username);
+        Task<UserEntity?> GetByUsernameAsync(string username, Guid? id=null);
     }
 }

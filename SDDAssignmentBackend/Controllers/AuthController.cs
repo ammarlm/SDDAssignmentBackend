@@ -19,6 +19,7 @@ namespace SDDAssignmentBackend.Controllers
             _authenticationService = authenticationService;
         }
 
+        [Route("Login")]
         [HttpPost]
         public async Task<IActionResult> PostUserLogin([FromBody] LoginRequestDTO loginRequestDTO)
         {

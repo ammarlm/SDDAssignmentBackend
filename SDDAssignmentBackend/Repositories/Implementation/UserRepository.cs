@@ -11,10 +11,10 @@ namespace SDDAssignmentBackend.Repositories.Implementation
         {
         }
 
-        public Task<UserEntity?> GetByUsernameAsync(string username)
+        public Task<UserEntity?> GetByUsernameAsync(string username, Guid? id)
         {
             var query = AsQuerable();
-            return query.FirstOrDefaultAsync(x => x.Username == username);
+            return query.FirstOrDefaultAsync(x => x.Username == username && (id == null && x.Id != id));
         }
     }
 }
