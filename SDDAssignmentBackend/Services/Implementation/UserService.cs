@@ -1,9 +1,13 @@
-﻿using SDDAssignmentBackend.Context;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System.Text;
+using SDDAssignmentBackend.Context;
 using SDDAssignmentBackend.DTO;
 using SDDAssignmentBackend.Entities;
 using SDDAssignmentBackend.Helpers;
 using SDDAssignmentBackend.Repositories.Interface;
 using SDDAssignmentBackend.Services.Interface;
+using Newtonsoft.Json;
 
 namespace SDDAssignmentBackend.Services.Implementation
 {
@@ -12,11 +16,15 @@ namespace SDDAssignmentBackend.Services.Implementation
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<UserService> _logger;
-        public UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, ILogger<UserService> logger)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IAuditRepository _auditRepository;
+        public UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, ILogger<UserService> logger, IHttpContextAccessor httpContextAccessor, IAuditRepository auditRepository)
         {
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
+            _auditRepository = auditRepository;
         }
 
         public async Task<PaginationResponse<UserEntity>> GetUsers(int page, int pageSize, string orderBy, string orderType, string search)
@@ -29,7 +37,7 @@ namespace SDDAssignmentBackend.Services.Implementation
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
             {
-                throw new Exception("User not found");
+                throw new LogicException("User not found");
             }
             return user;
         }
@@ -70,7 +78,7 @@ namespace SDDAssignmentBackend.Services.Implementation
 
             //save user
             user = _userRepository.Add(user);
-
+            AddAudit(user, "Create");
             try
             {
                 await _unitOfWork.SaveChangesAsync();
@@ -108,6 +116,7 @@ namespace SDDAssignmentBackend.Services.Implementation
             user.Role = updateUserDTO.Role.GetDescription();
 
             _userRepository.Update(user);
+            AddAudit(user, "Update", updateUserDTO);
 
             try
             {
@@ -133,6 +142,7 @@ namespace SDDAssignmentBackend.Services.Implementation
             var user = await GetUser(id);
 
             _userRepository.Delete(user.Id);
+            AddAudit(user, "Delete");
             try
             {
                 await _unitOfWork.SaveChangesAsync();
@@ -144,6 +154,29 @@ namespace SDDAssignmentBackend.Services.Implementation
                 throw new Exception("Error while deleting user", ex);
             }
         }
+        private void AddAudit(UserEntity user, string operation, UpdateUserDTO newData = null)
+        {
+            var username = _httpContextAccessor.HttpContext?.User.Identity?.Name ?? "System";
+            var audit = new AuditEntity()
+            {
+                Operation = operation,
+                TableName = nameof(UserEntity),
+                CreatedAt = DateTime.Now,
+                CreatedBy = username,
+                RecordId = user.Id,
 
+            };
+            if (operation == "Update")
+            {
+                audit.OldData = JsonConvert.SerializeObject(user);
+                if (newData != null)
+                    audit.NewData = JsonConvert.SerializeObject(newData);
+            }
+            else if (operation == "Create")
+            {
+                audit.NewData = JsonConvert.SerializeObject(user);
+            }
+            _auditRepository.Add(audit);
+        }
     }
 }

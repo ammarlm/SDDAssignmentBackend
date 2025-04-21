@@ -11,5 +11,6 @@ namespace SDDAssignmentBackend.Context
         }
 
         public DbSet<UserEntity> Users { get; set; }
+        public DbSet<AuditEntity> AuditLogs { get; set; }
     }
 }

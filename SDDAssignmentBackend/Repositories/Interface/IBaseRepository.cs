@@ -1,4 +1,5 @@
-﻿using SDDAssignmentBackend.Entities;
+﻿using Microsoft.Data.SqlClient;
+using SDDAssignmentBackend.Entities;
 
 namespace SDDAssignmentBackend.Repositories.Interface
 {
@@ -12,5 +13,7 @@ namespace SDDAssignmentBackend.Repositories.Interface
         void Update(T entity);
         void Delete(Guid id);
         IQueryable<T> AsQuerable();
+
+        Task ExecuteSqlRawAsync(string query, params object[] parameter);
     }
 }

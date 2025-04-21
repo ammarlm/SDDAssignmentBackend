@@ -17,6 +17,7 @@ namespace SDDAssignmentBackend.Configurations
 
         public static void AddDependencies(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddHttpContextAccessor();
             services.AddSwagger();
             services.AddAuth(configuration);
             services.AddOptions(configuration);
@@ -36,6 +37,7 @@ namespace SDDAssignmentBackend.Configurations
         public static void AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAuditRepository, AuditRepository>();
 
         }
         public static void AddServices(this IServiceCollection services)

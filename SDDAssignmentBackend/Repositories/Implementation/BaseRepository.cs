@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using SDDAssignmentBackend.Entities;
 using SDDAssignmentBackend.Repositories.Interface;
 
@@ -26,7 +27,7 @@ namespace SDDAssignmentBackend.Repositories.Implementation
 
         public T? GetById(Guid id)
         {
-            return _dbSet.FirstOrDefault(m=>m.Id == id);
+            return _dbSet.FirstOrDefault(m => m.Id == id);
         }
         public Task<T?> GetByIdAsync(Guid id)
         {
@@ -35,7 +36,7 @@ namespace SDDAssignmentBackend.Repositories.Implementation
 
         public T Add(T entity)
         {
-           _dbSet.Add(entity);
+            _dbSet.Add(entity);
             return entity;
         }
 
@@ -56,6 +57,11 @@ namespace SDDAssignmentBackend.Repositories.Implementation
         public IQueryable<T> AsQuerable()
         {
             return _dbSet.AsQueryable();
+        }
+
+        public Task ExecuteSqlRawAsync(string query, params object[] parameter)
+        {
+            return _context.Database.ExecuteSqlRawAsync(query, parameter);
         }
     }
 }
