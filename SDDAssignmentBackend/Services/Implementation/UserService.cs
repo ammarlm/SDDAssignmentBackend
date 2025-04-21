@@ -137,5 +137,10 @@ namespace SDDAssignmentBackend.Services.Implementation
                 throw new Exception("Error while deleting user", ex);
             }
         }
+
+        public async Task<List<UserEntity>> GetUsers()
+        {
+            return await _userRepository.GetAllAsync();
+        }
     }
 }

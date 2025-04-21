@@ -14,10 +14,14 @@ namespace SDDAssignmentBackend.Repositories.Implementation
             _context = context;
             _dbSet = context.Set<T>();
         }
-
         public IEnumerable<T> GetAll()
         {
             return _dbSet.ToList();
+        }
+
+        public Task<List<T>> GetAllAsync()
+        {
+            return _dbSet.ToListAsync();
         }
 
         public T? GetById(Guid id)

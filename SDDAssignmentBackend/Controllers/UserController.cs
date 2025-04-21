@@ -21,6 +21,11 @@ namespace SDDAssignmentBackend.Controllers
         {
             _userService = userService;
         }
+        [HttpGet()]
+        public async Task<IActionResult> GetUsers()
+        {
+            return Ok(Sucess(await _userService.GetUsers()));
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOneUser([FromRoute] Guid id)
