@@ -99,7 +99,7 @@ dotnet run
 - **POST /api/auth/login**
   - Authenticates a user and returns a JWT token.
   - Request Body: `{"username":"string","password":"string"}`
-  - Response: `{"token":"string","user":{"username":"string","role":"string"}}`
+  - Response: `{"token":"string","username":"string","role":"string"}`
   - Requires: Valid username and password.
 
 ### Users
